@@ -37,7 +37,7 @@ jobs:
       run: |
         sudo apt-get install jq
     - name: Clone scripts
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     # Choose the commit to build a release from.
     #
     # We want to avoid unbuildable revisions: choose the last green from CI.
@@ -68,7 +68,7 @@ jobs:
       run: >
         echo "RELEASE_DESCRIPTION=Unstable snapshot of clangd on ${{ env.RELEASE_DATE }}." >> commit.env
     - name: Upload result
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: env
         path: commit.env
@@ -85,7 +85,7 @@ jobs:
         echo "RELEASE_NAME=${{ github.event.inputs.release_name }}" >> commit.env
         echo "RELEASE_DESCRIPTION=${{ github.event.inputs.description }}" >> commit.env
     - name: Upload result
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: env
         path: commit.env
@@ -126,7 +126,7 @@ jobs:
         echo "TAG_NAME=${{ env.TAG_NAME }}" >> release.env
         echo "RELEASE_ID=${{ steps.create_release.outputs.id }}" >> release.env
     - name: Upload result
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: release
         path: release.env
@@ -159,7 +159,7 @@ jobs:
           binary_extension: ".exe"
     steps:
     - name: Clone scripts
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with: { ref: master }
     - name: Install tools
       run: ${{ matrix.config.preinstall }}
@@ -177,7 +177,7 @@ jobs:
           }
         }
     - name: Clone gRPC
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: grpc/grpc
         path: grpc
@@ -224,7 +224,7 @@ jobs:
         echo "CLANGD_DIR=clangd_${{ env.TAG_NAME }}" >> $GITHUB_ENV
       shell: bash
     - name: Clone LLVM
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ${{ env.LLVM_REPO }}
         path: llvm-project
