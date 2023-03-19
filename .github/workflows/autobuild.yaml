@@ -152,7 +152,7 @@ jobs:
             "-DCMAKE_C_COMPILER=cl"
             "-DCMAKE_CXX_COMPILER=cl"
             "-DLLVM_ENABLE_ZLIB=OFF"
-            "-DLLVM_USE_CRT_RELEASE=MT",
+            "-DLLVM_USE_CRT_RELEASE=MT"
             "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
           grpc_cmake: >-
             "-DgRPC_MSVC_STATIC_RUNTIME=ON"
