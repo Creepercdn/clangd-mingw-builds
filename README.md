@@ -1,3 +1,11 @@
+## clangd-mingw-builds
+
+This is a repository for auto building clangd for MinGW-w64 on Windows. 
+
+---
+
+Original README:
+
 ## clangd
 
 clangd is a language server, and provides C++ IDE features to editors.
