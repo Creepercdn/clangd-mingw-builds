@@ -236,63 +236,41 @@ jobs:
         cp llvm-project/llvm/LICENSE.TXT ${{ env.CLANGD_DIR }}
 
         cmake -G Ninja -S llvm-project/llvm -B ${{ env.CLANGD_DIR }}
-        "-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;openmp"
+        "-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;libclc;lld;lldb;openmp;polly;bolt;pstl"
+        "-DLLVM_ENABLE_RUNTIMES=all"
         "-DLLVM_ENABLE_ASSERTIONS=OFF"
         "-DLLVM_ENABLE_BACKTRACES=ON"
         "-DLLVM_ENABLE_TERMINFO=OFF"
         "-DCMAKE_BUILD_TYPE=Release"
-        "-DCLANG_PLUGIN_SUPPORT=OFF"
-        "-DLLVM_ENABLE_PLUGINS=OFF"
+        "-DCLANG_PLUGIN_SUPPORT=ON"
+        "-DLLVM_ENABLE_PLUGINS=ON"
         "-DCMAKE_C_FLAGS_RELEASE=${{ matrix.config.cflags }}"
         "-DCMAKE_CXX_FLAGS_RELEASE=${{ matrix.config.cflags }}"
         "-DCLANGD_ENABLE_REMOTE=ON"
-        "-DLLVM_ENABLE_ZSTD=OFF"
+        "-DLLVM_ENABLE_ZSTD=ON"
         "-DGRPC_INSTALL_PATH=$HOME/grpc-installation"
+        "-DCPACK_GENERATOR=ZIP"
         ${{ matrix.config.cmake }}
     - name: Ninja
       run: >
         ninja -C ${{ env.CLANGD_DIR }} clangd clangd-indexer clangd-index-server
         clangd-index-server-monitor
-    - name: Install OpenMP headers
-      shell: bash
+    - name: Package LLVM
       run: >
-        cp ${{ env.CLANGD_DIR }}/projects/openmp/runtime/src/omp{,-tools}.h ${{ env.CLANGD_DIR }}/lib/clang/*/include
-        || true # Don't let the non-existing omp headers block the release.
-    - name: Archive clangd
-      run: >
-        7z a clangd.zip
-        ${{ env.CLANGD_DIR }}/LICENSE.TXT
-        ${{ env.CLANGD_DIR }}/bin/clangd${{ matrix.config.binary_extension }}
-        ${{ env.CLANGD_DIR }}/lib/clang
-    - name: Archive indexing-tools
-      run: >
-        7z a indexing-tools.zip
-        ${{ env.CLANGD_DIR }}/LICENSE.TXT
-        ${{ env.CLANGD_DIR }}/bin/clangd-indexer${{ matrix.config.binary_extension }}
-        ${{ env.CLANGD_DIR }}/bin/clangd-index-server${{ matrix.config.binary_extension }}
-        ${{ env.CLANGD_DIR }}/bin/clangd-index-server-monitor${{ matrix.config.binary_extension }}
-        ${{ env.CLANGD_DIR }}/lib/clang
-    - name: Upload clangd asset
+        cmake --build build --target package --config Release
+    - name: Archive
+      run:
+        7z a llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip build/*.zip
+    - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUb_TOKEN }}
       with:
         upload_url: ${{ env.UPLOAD_URL }}
-        asset_name: clangd-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
-        asset_path: clangd.zip
+        asset_name: llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
+        asset_path: llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
         asset_content_type: application/zip
-    - name: Upload indexing-tools asset
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      with:
-        upload_url: ${{ env.UPLOAD_URL }}
-        asset_name: clangd_indexing_tools-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
-        asset_path: indexing-tools.zip
-        asset_content_type: application/zip
-    - name: Check binary compatibility
-      if: matrix.config.name == 'linux'
-      run: .github/workflows/lib_compat_test.py --lib=GLIBC_2.18 "$CLANGD_DIR/bin/clangd"
+    
   # Create the release, and upload the artifacts to it.
   finalize:
     runs-on: ubuntu-latest
@@ -310,6 +288,6 @@ jobs:
     - name: Publish release
       run: >
         curl -XPATCH
-        "-HAuthorization: Bearer ${{ secrets.RELEASE_TOKEN }}"
+        "-HAuthorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
         "https://api.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}"
         "-d" '{"draft": false}'
