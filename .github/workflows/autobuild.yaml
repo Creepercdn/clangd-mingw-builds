@@ -253,8 +253,7 @@ jobs:
         ${{ matrix.config.cmake }}
     - name: Ninja
       run: >
-        ninja -C ${{ env.CLANGD_DIR }} clangd clangd-indexer clangd-index-server
-        clangd-index-server-monitor
+        cmake --build build --config Release
     - name: Package LLVM
       run: >
         cmake --build build --target package --config Release
