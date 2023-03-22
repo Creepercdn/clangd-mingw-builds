@@ -275,7 +275,7 @@ jobs:
     - name: Upload clangd asset
       uses: actions/upload-release-asset@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.UPLOAD_URL }}
         asset_name: clangd-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
@@ -284,7 +284,7 @@ jobs:
     - name: Upload indexing-tools asset
       uses: actions/upload-release-asset@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.UPLOAD_URL }}
         asset_name: clangd_indexing_tools-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
@@ -310,6 +310,6 @@ jobs:
     - name: Publish release
       run: >
         curl -XPATCH
-        "-HAuthorization: Bearer ${{ secrets.RELEASE_TOKEN }}"
+        "-HAuthorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
         "https://api.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}"
         "-d" '{"draft": false}'
