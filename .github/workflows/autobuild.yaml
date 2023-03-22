@@ -63,10 +63,10 @@ jobs:
         echo "TAG_NAME=snapshot_${{ env.RELEASE_DATE }}" >> commit.env
     - name: Use date and release commit as release name
       run: >
-        echo "RELEASE_NAME=${{ env.RELEASE_DATE }} @${{ env.RELEASE_COMMIT_SHORT }}" >> commit.env
+        echo "RELEASE_NAME=FULL ${{ env.RELEASE_DATE }} @${{ env.RELEASE_COMMIT_SHORT }}" >> commit.env
     - name: Generate default release description
       run: >
-        echo "RELEASE_DESCRIPTION=Unstable snapshot of clangd on ${{ env.RELEASE_DATE }}." >> commit.env
+        echo "RELEASE_DESCRIPTION=Unstable snapshot of LLVM on ${{ env.RELEASE_DATE }}." >> commit.env
     - name: Upload result
       uses: actions/upload-artifact@v3
       with:
