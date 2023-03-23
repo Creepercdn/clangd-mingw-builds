@@ -253,17 +253,17 @@ jobs:
         ${{ matrix.config.cmake }}
     - name: Ninja
       run: >
-        cmake --build build --config Release
+        cmake --build ${{ env.CLANGD_DIR }} --config Release
     - name: Package LLVM
       run: >
-        cmake --build build --target package --config Release
+        cmake --build ${{ env.CLANGD_DIR }} --target package --config Release
     - name: Archive
       run:
-        7z a llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip build/*.zip
+        7z a llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip ${{ env.CLANGD_DIR }}/*.zip
     - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUb_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.UPLOAD_URL }}
         asset_name: llvm-${{ matrix.config.name }}-${{ env.TAG_NAME }}.zip
