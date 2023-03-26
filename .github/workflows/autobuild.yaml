@@ -243,7 +243,7 @@ jobs:
         ref: ${{ env.LLVM_COMMIT }}
     - name: CMake
       shell: powershell
-      run: |
+      run: >
         mkdir ${{ env.CLANGD_DIR }}
         
         echo $env:PYTHON_HOME
