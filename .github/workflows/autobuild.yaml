@@ -147,7 +147,7 @@ jobs:
           os: windows-2019
           preinstall: choco install ninja nasm
           vcvars: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
-          cflags: /O3 /DNDEBUG
+          cflags: /O2 /DNDEBUG
           cmake: >-
             "-DCMAKE_C_COMPILER=cl"
             "-DCMAKE_CXX_COMPILER=cl"
@@ -180,13 +180,14 @@ jobs:
       run: |
         echo ${{ matrix.config.grpc_cmake }} ${{ matrix.config.cmake }} > grpc-flags
     - name: Cache gRPC
-      id: cache-primes
+      id: cache-grpc
       uses: actions/cache@v3
       with:
         path: $HOME/grpc-installation
         key: ${{ runner.os }}-grpc-${{ hashFiles('grpc-flags') }}
     - name: Clone gRPC
       uses: actions/checkout@v3
+      if: steps.cache-grpc.outputs.cache-hit != 'true'
       with:
         repository: grpc/grpc
         path: grpc
@@ -196,6 +197,7 @@ jobs:
         ref: v1.36.3
         submodules: recursive
     - name: Build gRPC
+      if: steps.cache-grpc.outputs.cache-hit != 'true'
       run: >
         mkdir $HOME/grpc-installation
 
