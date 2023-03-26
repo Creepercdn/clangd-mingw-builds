@@ -243,8 +243,9 @@ jobs:
         ref: ${{ env.LLVM_COMMIT }}
     - name: CMake
       shell: powershell
-      run: >
+      run: |
         mkdir ${{ env.CLANGD_DIR }}
+        
         echo $env:PYTHON_HOME
 
         cp llvm-project/llvm/LICENSE.TXT ${{ env.CLANGD_DIR }}
