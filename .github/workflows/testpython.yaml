@@ -1,0 +1,12 @@
+name: Test python path
+on:
+  workflow_dispatch: {}
+jobs:
+  test:
+    name: test
+    runs-on: windows-2019
+    steps:
+    - shell: powershell
+      name: Test python
+      run: |
+        & "C:/hostedtoolcache/windows/Python/3.11.2/x64/python3.exe" --version
