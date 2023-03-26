@@ -252,6 +252,8 @@ jobs:
         "-DCPACK_GENERATOR=ZIP"
         "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
         ${{ matrix.config.cmake }}
+      env:
+        PYTHON_HOME: C:/hostedtoolcache/windows/Python/3.11.2/x86/python3.exe
     - name: Ninja
       run: >
         cmake --build ${{ env.CLANGD_DIR }} --config Release
