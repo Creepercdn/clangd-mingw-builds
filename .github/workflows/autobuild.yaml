@@ -258,7 +258,7 @@ jobs:
 
         cmake -G Ninja -S llvm-project/llvm -B ${{ env.CLANGD_DIR }}
         "-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;libclc;lld;lldb;openmp;polly;bolt;pstl"
-        "-DLLVM_ENABLE_RUNTIMES=all"
+        "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;compiler-rt;libc;openmp"
         "-DLLVM_ENABLE_ASSERTIONS=OFF"
         "-DLLVM_ENABLE_BACKTRACES=ON"
         "-DLLVM_ENABLE_LTO=OFF"
@@ -283,7 +283,7 @@ jobs:
         Python3_DIR: ${{ matrix.config.python_dir }}
     - name: Ninja
       run: >
-        cmake --build ${{ env.CLANGD_DIR }} --config Release
+        cmake --build ${{ env.CLANGD_DIR }} --config Release -j 4
     - name: Package LLVM
       run: >
         cmake --build ${{ env.CLANGD_DIR }} --target package --config Release
