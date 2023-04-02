@@ -182,7 +182,7 @@ jobs:
         echo ${{ matrix.config.grpc_cmake }} ${{ matrix.config.cmake }} > grpc-flags
     - name: Cache gRPC
       id: cache-grpc
-      uses: actions/cache@v3
+      uses: actions/cache/restore@v3
       with:
         path: $HOME/grpc-installation
         key: ${{ runner.os }}-grpc-${{ hashFiles('grpc-flags') }}
@@ -213,6 +213,12 @@ jobs:
         ${{ matrix.config.grpc_cmake }} ${{ matrix.config.cmake }}
 
         ninja -C grpc-build install
+    - name: Save gRPC
+      if: steps.cache-grpc.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: $HOME/grpc-installation
+        key: ${{ runner.os }}-grpc-${{ hashFiles('grpc-flags') }}
     - name: Fetch target commit
       uses: actions/download-artifact@v1
       with:
@@ -243,7 +249,7 @@ jobs:
         ref: ${{ env.LLVM_COMMIT }}
     - name: CMake
       shell: powershell
-      run: >
+      run: > # No libedit because lldb wont use it on windows https://reviews.llvm.org/D102208
         mkdir ${{ env.CLANGD_DIR }}
         
         echo $env:PYTHON_HOME
