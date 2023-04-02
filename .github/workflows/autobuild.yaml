@@ -145,7 +145,7 @@ jobs:
         config:
         - name: windows
           os: windows-2019
-          preinstall: choco install ninja nasm
+          preinstall: choco install ninja nasm lua
           vcvars: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
           cflags: /O2 /DNDEBUG
           cmake: >-
@@ -184,7 +184,7 @@ jobs:
       id: cache-grpc
       uses: actions/cache/restore@v3
       with:
-        path: ${{ env.HOME_PATH }}/grpc-installation
+        path: ${{ env.HOMEPATH }}/grpc-installation
         key: ${{ runner.os }}-grpc-${{ hashFiles('grpc-flags') }}
     - name: Clone gRPC
       uses: actions/checkout@v3
@@ -217,7 +217,7 @@ jobs:
       if: steps.cache-grpc.outputs.cache-hit != 'true'
       uses: actions/cache/save@v3
       with:
-        path: ${{ env.HOME_PATH }}/grpc-installation
+        path: ${{ env.HOMEPATH }}/grpc-installation
         key: ${{ runner.os }}-grpc-${{ hashFiles('grpc-flags') }}
     - name: Fetch target commit
       uses: actions/download-artifact@v1
