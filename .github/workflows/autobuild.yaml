@@ -275,7 +275,6 @@ jobs:
         "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
         "-DPython3_ROOT_DIR=${{ matrix.config.python_dir }}"
         "-DLLDB_ENABLE_PYTHON=ON"
-        "-DLLDB_ENABLE_LUA=ON"
         ${{ matrix.config.cmake }}
       env:
         PYTHON_HOME: ${{ matrix.config.python_dir }}
