@@ -145,7 +145,7 @@ jobs:
         config:
         - name: windows
           os: windows-2019
-          preinstall: choco install ninja nasm lua53
+          preinstall: irm get.scoop.sh | iex && scoop bucket add versions && scoop install ninja nasm lua53 mingw
           vcvars: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
           cflags: /O2 /DNDEBUG
           cmake: >-
@@ -275,6 +275,7 @@ jobs:
         "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
         "-DPython3_ROOT_DIR=${{ matrix.config.python_dir }}"
         "-DLLDB_ENABLE_PYTHON=ON"
+        "-DLLVM_BUILD_DOCS=ON"
         ${{ matrix.config.cmake }}
       env:
         PYTHON_HOME: ${{ matrix.config.python_dir }}
