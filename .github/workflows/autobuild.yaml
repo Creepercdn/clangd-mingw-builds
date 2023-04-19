@@ -163,6 +163,10 @@ jobs:
       with: { ref: master }
     - name: Install tools
       run: ${{ matrix.config.preinstall }}
+    - uses: actions/setup-python@v4
+      id: setuppy
+      with:
+        python-version: '3.11'
     # Visual Studio tools require a bunch of environment variables to be set.
     # Run vcvars64.bat and re-export the current environment to the workflow.
     # (It'd be nice to only export the variables that *changed*, oh well).
@@ -273,7 +277,7 @@ jobs:
         "-DGRPC_INSTALL_PATH=$HOME/grpc-installation"
         "-DCPACK_GENERATOR=ZIP"
         "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
-        "-DPython3_ROOT_DIR=${{ matrix.config.python_dir }}"
+        "-DPython3_ROOT_DIR=${{ steps.setuppy.outputs.python-path }}"
         "-DLLDB_ENABLE_PYTHON=ON"
         "-DLLVM_BUILD_DOCS=ON"
         ${{ matrix.config.cmake }}
