@@ -277,15 +277,10 @@ jobs:
         "-DGRPC_INSTALL_PATH=$HOME/grpc-installation"
         "-DCPACK_GENERATOR=ZIP"
         "-DLLVM_HOST_TRIPLE=x86_64-w64-windows-gnu"
-        "-DPython3_ROOT_DIR=${{ steps.setuppy.outputs.python-path }}"
+        "-DPython3_ROOT_DIR=${{ env.pythonLocation }}"
         "-DLLDB_ENABLE_PYTHON=ON"
         "-DLLVM_BUILD_DOCS=ON"
         ${{ matrix.config.cmake }}
-      env:
-        PYTHON_HOME: ${{ matrix.config.python_dir }}
-        PYTHON_ROOT_DIR: ${{ matrix.config.python_dir }}
-        Python3_ROOT_DIR: ${{ matrix.config.python_dir }}
-        Python3_DIR: ${{ matrix.config.python_dir }}
     - name: Ninja
       run: >
         cmake --build ${{ env.CLANGD_DIR }} --config Release -j 4
